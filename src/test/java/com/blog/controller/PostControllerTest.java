@@ -2,15 +2,14 @@ package com.blog.controller;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest // MockMvc 주입
 class PostControllerTest {
@@ -21,11 +20,25 @@ class PostControllerTest {
     @Test
     @DisplayName("/post 요청시 Hello World를 출력")
     void test() throws Exception {
-        // expect
-        mockMvc.perform(MockMvcRequestBuilders.get("/posts"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("Hello World"))
-                .andDo(MockMvcResultHandlers.print());  // Http 요청에 대한 정보 출력
+        mockMvc.perform(MockMvcRequestBuilders.post("/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"title\":\"제목\", \"content\":\"내용\"}")
+                )   // application/json
+                .andExpect(status().isOk())
+                .andExpect(content().string("{}"))
+                .andDo(print());  // Http 요청에 대한 정보 출력
+    }
+
+    @Test
+    @DisplayName("/post 요청시 title값은 필수")
+    void test2() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"title\" : \"\", \"content\" : \"내용\"}")
+                )   // application/json
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("제목을 입력해주세요."))
+                .andDo(print());  // Http 요청에 대한 정보 출력
     }
 
 }

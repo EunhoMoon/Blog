@@ -1,13 +1,12 @@
 package com.blog.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Getter
 @Entity
+@ToString
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class Post {
 
@@ -20,6 +19,7 @@ public class Post {
     @Lob
     private String content;
 
+    @Builder
     public Post(String title, String content) {
         this.title = title;
         this.content = content;

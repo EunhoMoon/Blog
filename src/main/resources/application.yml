@@ -5,7 +5,8 @@ spring:
       path: /h2-console
 
   datasource:
-    url: jdbc:h2:tcp://localhost/~/testcase
+    url: jdbc:h2:tcp://localhost/~/test #window
+#    url: jdbc:h2:tcp://localhost/~/testcase  #mac
     username: sa
     password:
     driver-class-name: org.h2.Driver

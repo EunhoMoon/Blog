@@ -5,6 +5,7 @@ import com.blog.repository.PostRepository;
 import com.blog.request.PostCreate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,16 +132,44 @@ class PostControllerTest {
         postRepository.saveAll(requestPosts);
 
         // expected
-        mockMvc.perform(MockMvcRequestBuilders.get("/posts?page=1&sort=id,desc")
+        mockMvc.perform(MockMvcRequestBuilders.get("/posts?page=1&size=10")
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(5)))
-                .andExpect(jsonPath("$.[0].id").value(30L))
+                .andExpect(jsonPath("$.length()", is(10)))
+                .andExpect(jsonPath("$.[0].id").value(requestPosts.get(29).getId()))
                 .andExpect(jsonPath("$.[0].title").value("테스트 제목 30"))
                 .andExpect(jsonPath("$.[0].content").value("테스트 내용 30"))
-                .andExpect(jsonPath("$.[4].id").value(26L))
+                .andExpect(jsonPath("$.[4].id").value(requestPosts.get(25).getId()))
                 .andExpect(jsonPath("$.[4].title").value("테스트 제목 26"))
                 .andExpect(jsonPath("$.[4].content").value("테스트 내용 26"))
                 .andDo(print());
     }
+
+
+    @Test
+    @DisplayName("페이지를 0으로 요청하면 첫 페이지를 가져온다.")
+    void test6() throws Exception {
+        // given
+        List<Post> requestPosts = IntStream.range(1, 31)
+                .mapToObj(i -> Post.builder()
+                        .title("테스트 제목 " + i)
+                        .content("테스트 내용 " + i)
+                        .build())
+                .collect(Collectors.toList());
+        postRepository.saveAll(requestPosts);
+
+        // expected
+        mockMvc.perform(MockMvcRequestBuilders.get("/posts?page=0&size=10")
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(10)))
+                .andExpect(jsonPath("$.[0].id").value(requestPosts.get(29).getId()))
+                .andExpect(jsonPath("$.[0].title").value("테스트 제목 30"))
+                .andExpect(jsonPath("$.[0].content").value("테스트 내용 30"))
+                .andExpect(jsonPath("$.[4].id").value(requestPosts.get(25).getId()))
+                .andExpect(jsonPath("$.[4].title").value("테스트 제목 26"))
+                .andExpect(jsonPath("$.[4].content").value("테스트 내용 26"))
+                .andDo(print());
+    }
+
 }

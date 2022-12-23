@@ -41,8 +41,6 @@ class PostControllerTest {
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(request);  // json 가공
 
-        System.out.println("json = " + json);
-
         mockMvc.perform(MockMvcRequestBuilders.post("/posts")
                         .contentType(APPLICATION_JSON)
                         .content(json)

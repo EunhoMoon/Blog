@@ -9,11 +9,18 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
 @Transactional
@@ -66,27 +73,27 @@ class PostServiceTest {
     }
 
     @Test
-    @DisplayName("글 목록 조회")
+    @DisplayName("글 목록 1페이지 조회")
     void test3() {
         // given
-        postRepository.saveAll(List.of(
-                Post.builder()
-                        .title("테스트 제목")
-                        .content("테스트 내용")
-                        .build(),
-                Post.builder()
-                        .title("테스트 제목")
-                        .content("테스트 내용")
-                        .build()
-        ));
+        List<Post> requestPosts = IntStream.range(1, 31)
+                .mapToObj(i -> Post.builder()
+                        .title("테스트 제목 " + i)
+                        .content("테스트 내용 " + i)
+                        .build())
+                .collect(Collectors.toList());
+        postRepository.saveAll(requestPosts);
 
         // when
-        List<PostResponse> posts = postService.getList();
-        log.info("findPost = {}", posts);
+        Pageable pageable = PageRequest.of(0, 5, Sort.by(Direction.DESC, "id"));
+        List<PostResponse> posts = postService.getList(pageable);
 
         // then
-        assertThat(postRepository.count()).isEqualTo(2L);
-        assertThat(posts.size() == 2);
+        log.info("posts size = {}", posts.size());
+        assertThat(postRepository.count()).isEqualTo(30L);
+        assertEquals(posts.size(), 5);
+        assertEquals("테스트 제목 30", posts.get(0).getTitle());
+        assertEquals("테스트 제목 26", posts.get(4).getTitle());
     }
 
 }

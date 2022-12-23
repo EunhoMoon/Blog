@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
@@ -44,7 +46,7 @@ class PostServiceTest {
 
     @Test
     @DisplayName("글 단건 조회")
-    void test() {
+    void test2() {
         // given
         PostCreate postCreate = PostCreate.builder()
                 .title("테스트 제목")
@@ -61,6 +63,30 @@ class PostServiceTest {
         assertThat(postRepository.count()).isEqualTo(1L);
         assertThat(postResponse.getTitle()).isEqualTo(postCreate.getTitle());
         assertThat(postResponse.getContent()).isEqualTo(postCreate.getContent());
+    }
+
+    @Test
+    @DisplayName("글 목록 조회")
+    void test3() {
+        // given
+        postRepository.saveAll(List.of(
+                Post.builder()
+                        .title("테스트 제목")
+                        .content("테스트 내용")
+                        .build(),
+                Post.builder()
+                        .title("테스트 제목")
+                        .content("테스트 내용")
+                        .build()
+        ));
+
+        // when
+        List<PostResponse> posts = postService.getList();
+        log.info("findPost = {}", posts);
+
+        // then
+        assertThat(postRepository.count()).isEqualTo(2L);
+        assertThat(posts.size() == 2);
     }
 
 }

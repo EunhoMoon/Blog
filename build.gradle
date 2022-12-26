@@ -62,15 +62,18 @@ test {
 }
 
 asciidoctor {
-//	configurations 'asciidoctorExt'
+	configurations 'asciidoctorExt'
 	dependsOn test
 	inputs.dir snippetsDir
+}
+
+asciidoctor.doFirst {
+	delete file('src/main/resources/static/docs')
 }
 
 bootJar {
 	dependsOn asciidoctor
 	copy {
-		println ">>>>>" + asciidoctor.outputDir
 		from asciidoctor.outputDir
 		into "src/main/resources/static/docs"
 	}

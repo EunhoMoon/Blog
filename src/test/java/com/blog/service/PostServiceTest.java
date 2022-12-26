@@ -1,6 +1,7 @@
 package com.blog.service;
 
 import com.blog.domain.Post;
+import com.blog.exception.PostNotFound;
 import com.blog.repository.PostRepository;
 import com.blog.request.PostCreate;
 import com.blog.request.PostEdit;
@@ -19,6 +20,7 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Slf4j
 @Transactional
@@ -71,6 +73,20 @@ class PostServiceTest {
     }
 
     @Test
+    @DisplayName("글 단건 조회 - 실패")
+    void test2_1() {
+        // given
+        PostCreate postCreate = PostCreate.builder()
+                .title("테스트 제목")
+                .content("테스트 내용")
+                .build();
+        Post post = postService.write(postCreate);
+
+        // then
+        assertThrows(PostNotFound.class, () -> postService.get(post.getId() + 1L));
+    }
+
+    @Test
     @DisplayName("글 목록 1페이지 조회")
     void test3() {
         // given
@@ -94,7 +110,7 @@ class PostServiceTest {
     }
 
     @Test
-    @DisplayName("글 제목 수정")
+    @DisplayName("글 수정 - 제목")
     void test4() {
         // given
         Post post = Post.builder()
@@ -119,8 +135,8 @@ class PostServiceTest {
     }
 
     @Test
-    @DisplayName("글 내용 수정")
-    void test5() {
+    @DisplayName("글 수정 - 내용")
+    void test4_1() {
         // given
         Post post = Post.builder()
                 .title("테스트 제목")
@@ -138,15 +154,34 @@ class PostServiceTest {
 
         // then
         Post changedPost = postRepository.findById(post.getId())
-                .orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. id=" + post.getId()));
+                .orElseThrow(PostNotFound::new);
 
         assertEquals("테스트 제목 수정", changedPost.getTitle());
         assertEquals("테스트 내용", changedPost.getContent());
     }
 
     @Test
+    @DisplayName("글 수정 - 실패")
+    void test4_2() {
+        // given
+        Post post = Post.builder()
+                .title("테스트 제목")
+                .content("테스트 내용")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("테스트 제목 수정")
+                .content("테스트 내용")
+                .build();
+
+        // expect
+        assertThrows(PostNotFound.class, () -> postService.edit(post.getId() + 1L, postEdit));
+    }
+
+    @Test
     @DisplayName("게시글 삭제")
-    void test6() {
+    void test5() {
         // given
         Post post = Post.builder()
                 .title("테스트 제목")
@@ -159,6 +194,20 @@ class PostServiceTest {
 
         // then
         assertEquals(postRepository.count(), 0L);
+    }
+
+    @Test
+    @DisplayName("게시글 삭제 - 실패")
+    void test5_1() {
+        // given
+        Post post = Post.builder()
+                .title("테스트 제목")
+                .content("테스트 내용")
+                .build();
+        postRepository.save(post);
+
+        // expect
+        assertThrows(PostNotFound.class, () -> postService.delete(post.getId() + 1L));
     }
 
 }

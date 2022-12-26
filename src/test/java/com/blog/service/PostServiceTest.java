@@ -115,6 +115,7 @@ class PostServiceTest {
                 .orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. id=" + post.getId()));
 
         assertEquals("테스트 제목 수정", changedPost.getTitle());
+        assertEquals("테스트 내용", changedPost.getContent());
     }
 
     @Test

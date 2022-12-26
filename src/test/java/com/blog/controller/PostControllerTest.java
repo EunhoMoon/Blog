@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -22,6 +21,7 @@ import java.util.stream.IntStream;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -47,7 +47,7 @@ class PostControllerTest {
         PostCreate request = PostCreate.builder().title("제목").content("내용").build();
         String json = mapper.writeValueAsString(request);  // json 가공
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/posts")
+        mockMvc.perform(post("/posts")
                         .contentType(APPLICATION_JSON)
                         .content(json)
                 )   // application/json
@@ -62,7 +62,7 @@ class PostControllerTest {
         PostCreate request = PostCreate.builder().title("").build();
         String json = mapper.writeValueAsString(request);  // json 가공
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/posts")
+        mockMvc.perform(post("/posts")
                         .contentType(APPLICATION_JSON)
                         .content(json)
                 )   // application/json
@@ -83,7 +83,7 @@ class PostControllerTest {
         String json = mapper.writeValueAsString(request);  // json 가공
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.post("/posts")
+        mockMvc.perform(post("/posts")
                         .contentType(APPLICATION_JSON)
                         .content(json)
                 )
@@ -109,7 +109,7 @@ class PostControllerTest {
         postRepository.save(post);
 
         // expected
-        mockMvc.perform(MockMvcRequestBuilders.get("/posts/" + post.getId())
+        mockMvc.perform(get("/posts/" + post.getId())
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(post.getId()))
@@ -131,7 +131,7 @@ class PostControllerTest {
         postRepository.saveAll(requestPosts);
 
         // expected
-        mockMvc.perform(MockMvcRequestBuilders.get("/posts?page=1&size=10")
+        mockMvc.perform(get("/posts?page=1&size=10")
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(10)))
@@ -158,7 +158,7 @@ class PostControllerTest {
         postRepository.saveAll(requestPosts);
 
         // expected
-        mockMvc.perform(MockMvcRequestBuilders.get("/posts?page=0&size=10")
+        mockMvc.perform(get("/posts?page=0&size=10")
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(10)))
@@ -187,9 +187,26 @@ class PostControllerTest {
                 .build();
 
         // expected
-        mockMvc.perform(MockMvcRequestBuilders.patch("/posts/" + post.getId())
+        mockMvc.perform(patch("/posts/" + post.getId())
                         .contentType(APPLICATION_JSON)
                         .content(mapper.writeValueAsString(postEdit)))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("글 삭제")
+    void test8() throws Exception {
+        // given
+        Post post = Post.builder()
+                .title("테스트 제목")
+                .content("테스트 내용")
+                .build();
+        postRepository.save(post);
+
+        // expected
+        mockMvc.perform(delete("/posts/" + post.getId())
+                        .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print());
     }

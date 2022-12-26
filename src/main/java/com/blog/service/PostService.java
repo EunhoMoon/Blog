@@ -1,6 +1,7 @@
 package com.blog.service;
 
 import com.blog.domain.Post;
+import com.blog.domain.PostEditor;
 import com.blog.repository.PostRepository;
 import com.blog.request.PostCreate;
 import com.blog.request.PostEdit;
@@ -8,8 +9,8 @@ import com.blog.request.PostSearch;
 import com.blog.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,11 +49,19 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void edit(Long postId, PostEdit postEdit) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
 
-        post.setTitle(postEdit.getTitle());
-        post.setContent(postEdit.getContent());
+        PostEditor.PostEditorBuilder editorBuilder = post.toEditor();
+
+        PostEditor editor = editorBuilder
+                .title(postEdit.getTitle())
+                .content(postEdit.getContent())
+                .build();
+
+        post.edit(editor);
     }
 
 }

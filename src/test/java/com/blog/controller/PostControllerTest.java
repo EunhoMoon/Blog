@@ -3,9 +3,9 @@ package com.blog.controller;
 import com.blog.domain.Post;
 import com.blog.repository.PostRepository;
 import com.blog.request.PostCreate;
+import com.blog.request.PostEdit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +38,13 @@ class PostControllerTest {
     @Autowired
     private PostRepository postRepository;
 
+    ObjectMapper mapper = new ObjectMapper();
+
     @Test
     @DisplayName("/post 정상 요청")
     void test() throws Exception {
         // given
         PostCreate request = PostCreate.builder().title("제목").content("내용").build();
-        ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(request);  // json 가공
 
         mockMvc.perform(MockMvcRequestBuilders.post("/posts")
@@ -59,7 +60,6 @@ class PostControllerTest {
     void test2() throws Exception {
         // given
         PostCreate request = PostCreate.builder().title("").build();
-        ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(request);  // json 가공
 
         mockMvc.perform(MockMvcRequestBuilders.post("/posts")
@@ -80,7 +80,6 @@ class PostControllerTest {
     void test3() throws Exception {
         // given
         PostCreate request = PostCreate.builder().title("제목 입니다.").content("내용 입니다.").build();
-        ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(request);  // json 가공
 
         // when
@@ -169,6 +168,29 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.[4].id").value(requestPosts.get(25).getId()))
                 .andExpect(jsonPath("$.[4].title").value("테스트 제목 26"))
                 .andExpect(jsonPath("$.[4].content").value("테스트 내용 26"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("글 제목 수정")
+    void test7() throws Exception {
+        // given
+        Post post = Post.builder()
+                .title("테스트 제목")
+                .content("테스트 내용")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("테스트 제목 수정")
+                .content("테스트 내용")
+                .build();
+
+        // expected
+        mockMvc.perform(MockMvcRequestBuilders.patch("/posts/" + post.getId())
+                        .contentType(APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(postEdit)))
+                .andExpect(status().isOk())
                 .andDo(print());
     }
 

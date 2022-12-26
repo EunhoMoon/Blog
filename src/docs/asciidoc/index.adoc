@@ -1,11 +1,26 @@
 # Blog API
-:toc:
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
 
 ## 글 단건 조회
 
 ### 요청
-include::{snippets}/index/http-request.adoc[]
+include::{snippets}/post-inquiry/http-request.adoc[]
+### 요청 파라미터
+include::{snippets}/post-inquiry/path-parameters.adoc[]
 ### 응답
-include::{snippets}/index/http-response.adoc[]
-### curl
-include::{snippets}/index/curl-request.adoc[]
+include::{snippets}/post-inquiry/http-response.adoc[]
+include::{snippets}/post-inquiry/response-fields.adoc[]
+
+## 글 작성
+
+### 요청
+include::{snippets}/post-create/http-request.adoc[]
+### 요청 파라미터
+include::{snippets}/post-create/request-fields.adoc[]
+### 응답
+include::{snippets}/post-create/http-response.adoc[]
+include::{snippets}/post-create/response-fields.adoc[]

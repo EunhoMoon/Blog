@@ -23,6 +23,7 @@ public class PostController {
     @PostMapping("/posts")
     public Post post(@RequestBody @Valid PostCreate request) {
         request.validate();
+        log.info("im in");
         return postService.write(request);
     }
 

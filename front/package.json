@@ -15,7 +15,6 @@
     "axios": "^1.2.1",
     "bootstrap": "^5.2.0-beta1",
     "element-plus": "^2.2.27",
-    "element-ui": "^2.15.12",
     "pinia": "^2.0.28",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6"

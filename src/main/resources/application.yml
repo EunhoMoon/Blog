@@ -5,8 +5,8 @@ spring:
       path: /h2-console
 
   datasource:
-#    url: jdbc:h2:tcp://localhost/~/test #window
-    url: jdbc:h2:tcp://localhost/~/testcase  #mac
+    url: jdbc:h2:tcp://localhost/~/test #window
+    #    url: jdbc:h2:tcp://localhost/~/testcase  #mac
     username: sa
     password:
     driver-class-name: org.h2.Driver
@@ -19,6 +19,18 @@ spring:
         one-indexed-parameters: true
 
   jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
     hibernate:
       ddl-auto: create
-      show-sql: true
+
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace

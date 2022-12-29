@@ -1,21 +1,17 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
+import Header from "@/components/Header.vue";
+import Content from "@/components/Content.vue";
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/write">글 작성</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+  <Header/>
+  <Content/>
 </template>
 
 <style scoped>
+body {
+  height: 100vh;
+}
+
+
 </style>

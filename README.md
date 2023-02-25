@@ -5,7 +5,7 @@
 - Vue를 통한 심플한 화면 구현
 
 ### Springboot
-- Springboot ^2.7.6
+- Springboot 2.7.6
 - Gradle
 - JPA, Spring Data JPA, QueryDSL
 - h2 database

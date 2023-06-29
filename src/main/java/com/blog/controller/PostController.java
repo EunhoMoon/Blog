@@ -18,33 +18,32 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostController {
 
-    private final PostService postService;
+  private final PostService postService;
 
-    @PostMapping("/posts")
-    public Post post(@RequestBody @Valid PostCreate request) {
-        request.validate();
-        log.info("im in");
-        return postService.write(request);
-    }
+  @PostMapping("/posts")
+  public Post post(@RequestBody @Valid PostCreate request) {
+    request.validate();
+    return postService.write(request);
+  }
 
-    @GetMapping("/posts/{postId}")
-    public PostResponse get(@PathVariable Long postId) {
-        return postService.get(postId);
-    }
+  @GetMapping("/posts/{postId}")
+  public PostResponse get(@PathVariable Long postId) {
+    return postService.get(postId);
+  }
 
-    @GetMapping("/posts")
-    public List<PostResponse> getList(PostSearch postSearch) {
-        return postService.getList(postSearch);
-    }
+  @GetMapping("/posts")
+  public List<PostResponse> getList(PostSearch postSearch) {
+    return postService.getList(postSearch);
+  }
 
-    @PatchMapping("/posts/{postId}")
-    public void edit(@PathVariable Long postId, @RequestBody @Valid PostEdit request) {
-       postService.edit(postId, request);
-    }
+  @PatchMapping("/posts/{postId}")
+  public void edit(@PathVariable Long postId, @RequestBody @Valid PostEdit request) {
+    postService.edit(postId, request);
+  }
 
-    @DeleteMapping("/posts/{postId}")
-    public void delete(@PathVariable Long postId) {
-       postService.delete(postId);
-    }
+  @DeleteMapping("/posts/{postId}")
+  public void delete(@PathVariable Long postId) {
+    postService.delete(postId);
+  }
 
 }

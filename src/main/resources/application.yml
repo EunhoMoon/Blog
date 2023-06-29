@@ -5,8 +5,7 @@ spring:
       path: /h2-console
 
   datasource:
-    url: jdbc:h2:tcp://localhost/~/test #window
-    #    url: jdbc:h2:tcp://localhost/~/testcase  #mac
+    url: jdbc:h2:mem:blog
     username: sa
     password:
     driver-class-name: org.h2.Driver
@@ -25,7 +24,7 @@ spring:
         format_sql: true
         use_sql_comments: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 
 logging:
   level:

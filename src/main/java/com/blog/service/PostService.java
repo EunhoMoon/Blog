@@ -19,58 +19,59 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PostService {
 
-    private final PostRepository postRepository;
+  private final PostRepository postRepository;
 
-    public Post write(PostCreate postCreate) {
-        Post post = Post.builder()
-                .title(postCreate.getTitle())
-                .content(postCreate.getContent())
-                .build();
+  public Post write(PostCreate postCreate) {
+    Post post = Post.builder()
+        .title(postCreate.getTitle())
+        .content(postCreate.getContent())
+        .build();
 
-        return postRepository.save(post);
-    }
+    return postRepository.save(post);
+  }
 
-    public PostResponse get(Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(PostNotFound::new);
+  public PostResponse get(Long postId) {
+    Post post = postRepository.findById(postId)
+        .orElseThrow(PostNotFound::new);
 
-        return PostResponse.builder()
-                .id(post.getId())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .build();
-    }
+    return PostResponse.builder()
+        .id(post.getId())
+        .title(post.getTitle())
+        .content(post.getContent())
+        .build();
+  }
 
-    public List<PostResponse> getList(PostSearch postSearch) {
+  public List<PostResponse> getList(PostSearch postSearch) {
 //        Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Direction.DESC, "id"));
-        return postRepository.getList(postSearch).stream()
-                .map(PostResponse::new)
-                .collect(Collectors.toList());
-    }
+    return postRepository.getList(postSearch).stream()
+        .map(PostResponse::new)
+        .collect(Collectors.toList());
+  }
 
-    @Transactional
-    public void edit(Long postId, PostEdit postEdit) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(PostNotFound::new);
+  @Transactional
+  public void edit(Long postId, PostEdit postEdit) {
+    Post post = postRepository.findById(postId)
+        .orElseThrow(PostNotFound::new);
 
-        PostEditor.PostEditorBuilder editorBuilder = post.toEditor();
+    PostEditor.PostEditorBuilder editorBuilder = post.toEditor();
 
-        PostEditor editor = editorBuilder
-                .title(postEdit.getTitle())
-                .content(postEdit.getContent())
-                .build();
+    PostEditor editor = editorBuilder
+        .title(postEdit.getTitle())
+        .content(postEdit.getContent())
+        .build();
 
-        post.edit(editor);
-    }
+    post.edit(editor);
+  }
 
-    @Transactional
-    public void delete(Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(PostNotFound::new);
+  @Transactional
+  public void delete(Long postId) {
+    Post post = postRepository.findById(postId)
+        .orElseThrow(PostNotFound::new);
 
-        postRepository.deleteById(post.getId());
-    }
+    postRepository.deleteById(post.getId());
+  }
 
 }

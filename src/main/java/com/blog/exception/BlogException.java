@@ -8,20 +8,20 @@ import java.util.concurrent.ConcurrentHashMap;
 @Getter
 public abstract class BlogException extends RuntimeException {
 
-    private final Map<String, String> validation = new ConcurrentHashMap<>();
+  private final Map<String, String> validation = new ConcurrentHashMap<>();
 
-    public BlogException(String message) {
-        super(message);
-    }
+  public BlogException(String message) {
+    super(message);
+  }
 
-    public BlogException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  public BlogException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-    public abstract int getStatusCode();
+  public abstract int getStatusCode();
 
-    public void addValidation(String fieldName, String message) {
-        validation.put(fieldName, message);
-    }
+  public void addValidation(String fieldName, String message) {
+    validation.put(fieldName, message);
+  }
 
 }

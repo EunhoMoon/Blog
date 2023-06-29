@@ -11,29 +11,29 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class Post {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String title;
+  private String title;
 
-    @Lob
-    private String content;
+  @Lob
+  private String content;
 
-    @Builder
-    public Post(String title, String content) {
-        this.title = title;
-        this.content = content;
-    }
+  @Builder
+  public Post(String title, String content) {
+    this.title = title;
+    this.content = content;
+  }
 
-    public PostEditor.PostEditorBuilder toEditor() {
-        return PostEditor.builder()
-                .title(title)
-                .content(content);
-    }
+  public PostEditor.PostEditorBuilder toEditor() {
+    return PostEditor.builder()
+        .title(title)
+        .content(content);
+  }
 
-    public void edit(PostEditor editor) {
-        title = editor.getTitle();
-        content = editor.getContent();
-    }
+  public void edit(PostEditor editor) {
+    title = editor.getTitle();
+    content = editor.getContent();
+  }
 }

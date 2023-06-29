@@ -1,5 +1,6 @@
 package com.blog.controller;
 
+import com.blog.config.data.UserSession;
 import com.blog.domain.Post;
 import com.blog.request.PostCreate;
 import com.blog.request.PostEdit;
@@ -21,8 +22,9 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/foo")
-    public String foo() {
-        return "Foo";
+    public String foo(UserSession userSession) {
+        log.info("username = {}", userSession.getName());
+        return userSession.getName();
     }
 
     @PostMapping("/posts")

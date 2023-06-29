@@ -16,7 +16,10 @@ public class AuthInterceptor implements HandlerInterceptor {
         log.info(">> preHandle");
 
         String accessToken = request.getParameter("accessToken");
-        if (accessToken != null && accessToken.equals("Janek")) return true;
+        if (accessToken != null && accessToken.equals("Janek")) {
+            request.setAttribute("username", accessToken);
+            return true;
+        }
 
         throw new Unauthorized();
     }

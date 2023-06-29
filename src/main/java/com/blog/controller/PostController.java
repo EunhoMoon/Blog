@@ -18,32 +18,56 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostController {
 
-  private final PostService postService;
+    private final PostService postService;
 
-  @PostMapping("/posts")
-  public Post post(@RequestBody @Valid PostCreate request) {
-    request.validate();
-    return postService.write(request);
-  }
+    @GetMapping("/foo")
+    public String foo() {
+        return "Foo";
+    }
 
-  @GetMapping("/posts/{postId}")
-  public PostResponse get(@PathVariable Long postId) {
-    return postService.get(postId);
-  }
+    @PostMapping("/posts")
+    public Post post(
+        @RequestBody @Valid PostCreate request,
+        @RequestParam String authorization
+    ) {
+        if (!authorization.equals("Janek")) {
+            throw new RuntimeException();
+        }
+        request.validate();
+        return postService.write(request);
+    }
 
-  @GetMapping("/posts")
-  public List<PostResponse> getList(PostSearch postSearch) {
-    return postService.getList(postSearch);
-  }
+    @GetMapping("/posts/{postId}")
+    public PostResponse get(@PathVariable Long postId) {
+        return postService.get(postId);
+    }
 
-  @PatchMapping("/posts/{postId}")
-  public void edit(@PathVariable Long postId, @RequestBody @Valid PostEdit request) {
-    postService.edit(postId, request);
-  }
+    @GetMapping("/posts")
+    public List<PostResponse> getList(PostSearch postSearch) {
+        return postService.getList(postSearch);
+    }
 
-  @DeleteMapping("/posts/{postId}")
-  public void delete(@PathVariable Long postId) {
-    postService.delete(postId);
-  }
+    @PatchMapping("/posts/{postId}")
+    public void edit(
+        @PathVariable Long postId,
+        @RequestBody @Valid PostEdit request,
+        @RequestHeader String authorization
+    ) {
+        if (!authorization.equals("Janek")) {
+            throw new RuntimeException();
+        }
+        postService.edit(postId, request);
+    }
+
+    @DeleteMapping("/posts/{postId}")
+    public void delete(
+        @PathVariable Long postId,
+        @RequestHeader String authorization
+    ) {
+        if (!authorization.equals("Janek")) {
+            throw new RuntimeException();
+        }
+        postService.delete(postId);
+    }
 
 }

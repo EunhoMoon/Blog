@@ -1,0 +1,19 @@
+### 로그인
+
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@co.kr",
+  "password": "12341234"
+}
+
+### 로그인 실패
+
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@co.kr",
+  "password": "asdfasdfasd"
+}

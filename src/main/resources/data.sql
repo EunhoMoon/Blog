@@ -1,0 +1,1 @@
+INSERT INTO users (name, email, password, created_at, updated_at) VALUES ('test', 'test@co.kr', '12341234', NOW(), NOW())

@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @ToString
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class Post {
+public class Post extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

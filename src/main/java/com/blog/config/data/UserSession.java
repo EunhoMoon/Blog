@@ -1,12 +1,13 @@
 package com.blog.config.data;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class UserSession {
 
-    private String name;
+    private final Long id;
 
+    public UserSession(Long id) {
+        this.id = id;
+    }
 }
